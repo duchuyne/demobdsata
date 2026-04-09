@@ -31,7 +31,7 @@ function handleRequest(e) {
 
     // Tạo header nếu sheet còn trống
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(['Thời Gian', 'Họ Và Tên', 'Số Điện Thoại', 'Email']);
+      sheet.appendRow(['Thời Gian', 'Họ Và Tên', 'Số Điện Thoại', 'Tài Chính']);
       // Format header
       var headerRange = sheet.getRange(1, 1, 1, 4);
       headerRange.setFontWeight('bold');
@@ -39,17 +39,23 @@ function handleRequest(e) {
       headerRange.setFontColor('#f5c842');
       // Format cột Số Điện Thoại (cột C) thành Plain Text để giữ số 0 đầu
       sheet.getRange('C:C').setNumberFormat('@STRING@');
+    } else {
+      // Nếu sheet cũ đang dùng header Email thì đổi sang Tài Chính cho đồng bộ form mới.
+      var oldHeader = sheet.getRange(1, 4).getValue();
+      if (oldHeader === 'Email') {
+        sheet.getRange(1, 4).setValue('Tài Chính');
+      }
     }
 
     // Lấy dữ liệu từ request params
     var params = e.parameter || {};
     var name   = params.name  || '';
     var phone  = params.phone || '';
-    var email  = params.email || '';
+    var finance = params.finance || params.email || '';
     var time   = params.time  || new Date().toLocaleString('vi-VN', {timeZone: 'Asia/Ho_Chi_Minh'});
 
     // Ghi vào Sheet – thêm ký tự apostrophe trước SĐT để Google Sheets giữ số 0 đầu
-    sheet.appendRow([time, name, "'" + phone, email]);
+    sheet.appendRow([time, name, "'" + phone, finance]);
 
     // Format dòng mới: highlight dòng chẵn
     var lastRow = sheet.getLastRow();
