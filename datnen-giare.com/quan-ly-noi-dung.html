@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Nội Dung - Đất Nền</title>
+  <style>
+    :root {
+      --bg: #f4f7f9;
+      --panel: #ffffff;
+      --ink: #14313a;
+      --muted: #5c6f75;
+      --line: #d9e2e6;
+      --brand: #0f6b5a;
+      --brand-2: #0b4d41;
+      --warn: #b45309;
+      --ok: #166534;
+      --danger: #b91c1c;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Be Vietnam Pro", "Segoe UI", Tahoma, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f7fafc, var(--bg));
+    }
+
+    .wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .head {
+      background: linear-gradient(135deg, #0b3f45, #14645a);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 18px 36px rgba(12, 44, 47, 0.2);
+    }
+
+    .head h1 {
+      margin: 0 0 8px;
+      font-size: clamp(22px, 3vw, 32px);
+    }
+
+    .head p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.86);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .notice {
+      margin-top: 10px;
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(245, 220, 80, 0.18);
+      border: 1px solid rgba(245, 220, 80, 0.5);
+      color: #fff8dd;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0 18px;
+    }
+
+    .finder-box {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      margin: -4px 0 14px;
+    }
+
+    .finder-head {
+      font-size: 14px;
+      font-weight: 700;
+      color: #13424e;
+      margin-bottom: 8px;
+    }
+
+    .finder-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .finder-input {
+      flex: 1 1 320px;
+      border: 1px solid #c9d7dd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #17323a;
+      background: #fff;
+    }
+
+    .finder-select {
+      border: 1px solid #c9d7dd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #17323a;
+      background: #fff;
+      min-width: 150px;
+    }
+
+    .finder-results {
+      border: 1px solid #e6edf1;
+      border-radius: 10px;
+      background: #fbfdfe;
+      max-height: 280px;
+      overflow: auto;
+      padding: 8px;
+    }
+
+    .finder-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px dashed #dde7ec;
+      padding: 8px 4px;
+    }
+
+    .finder-item:last-child {
+      border-bottom: none;
+    }
+
+    .finder-path {
+      font-size: 13px;
+      color: #244a54;
+      word-break: break-all;
+    }
+
+    .finder-empty {
+      font-size: 13px;
+      color: #68818a;
+      padding: 8px 4px;
+    }
+
+    .host-pass {
+      border: 1px solid #c9d7dd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      min-width: 220px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #17323a;
+      background: #fff;
+    }
+
+    button,
+    .file-label {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    button:hover,
+    .file-label:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-main {
+      color: #fff;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+    }
+
+    .btn-soft {
+      color: #0f4a4e;
+      background: #e8f4f3;
+      border: 1px solid #c9e3df;
+    }
+
+    .btn-warn {
+      color: #fff;
+      background: linear-gradient(135deg, #b45309, #92400e);
+    }
+
+    .btn-danger {
+      color: #fff;
+      background: linear-gradient(135deg, #c0392b, #991b1b);
+    }
+
+    #pickFile {
+      display: none;
+    }
+
+    .status {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .status.ok {
+      background: #ecfdf3;
+      color: var(--ok);
+      border-color: #b7ebd0;
+    }
+
+    .status.warn {
+      background: #fff7ed;
+      color: var(--warn);
+      border-color: #fed7aa;
+    }
+
+    .status.error {
+      background: #fef2f2;
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+    }
+
+    .sidebar,
+    .content {
+      background: var(--panel);
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 24px rgba(15, 42, 49, 0.05);
+    }
+
+    .sidebar {
+      padding: 10px;
+      position: sticky;
+      top: 14px;
+      align-self: start;
+      max-height: calc(100vh - 28px);
+      overflow: auto;
+    }
+
+    .tab {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid transparent;
+      margin: 0 0 6px;
+    }
+
+    .tab.active {
+      background: #eaf8f5;
+      color: #0b4f43;
+      border-color: #bde3db;
+    }
+
+    .content {
+      padding: 18px;
+    }
+
+    .section {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      background: #fcfeff;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .section p.help {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .card {
+      border: 1px solid #e7eef2;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: #fff;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #13424e;
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #32545d;
+      margin-bottom: 6px;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      border: 1px solid #d2dde2;
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #17323a;
+      background: #fff;
+    }
+
+    .field textarea {
+      min-height: 72px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .field textarea.long {
+      min-height: 130px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 13px;
+    }
+
+    .tiny {
+      font-size: 12px;
+      color: #6b7f86;
+      margin-top: 4px;
+    }
+
+    .actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 12px;
+    }
+
+    .btn-mini {
+      padding: 8px 12px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+
+    .preview-wrap {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .preview-head {
+      background: #eef3f6;
+      color: #38535c;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    #previewFrame {
+      width: 100%;
+      min-height: 520px;
+      border: none;
+      display: none;
+      background: #fff;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+
+      #previewFrame {
+        min-height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <h1>Quản Lý Nội Dung Không Cần Chuyên Môn</h1>
+      <p>
+        File này giúp sửa nội dung text, ảnh, video cho các phần của web một cách dễ dàng.
+        Đã bỏ qua theo yêu cầu: Tổng Quan, Vị Trí, Tin Tức.
+      </p>
+      <div class="notice">
+        Cách dùng nhanh: 1) Mở file này trong trình duyệt, 2) Sửa nội dung, 3) Bấm "Tải index.html đã cập nhật".
+      </div>
+      <div class="notice" style="margin-top:8px;background:rgba(90,160,250,0.18);border-color:rgba(120,190,255,0.55);">
+        Muốn cập nhật trực tiếp lên host: sửa mật khẩu trong file api-save-index.php, sau đó nhập mật khẩu và bấm "Lưu lên host".
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn-main" id="loadDefaultBtn">Nạp index.html cùng thư mục</button>
+      <label class="file-label btn-soft" for="pickFile">Chọn file index.html thủ công</label>
+      <input id="pickFile" type="file" accept=".html,text/html" />
+      <button class="btn-main" id="previewBtn">Xem trước</button>
+      <button class="btn-warn" id="downloadBtn">Tải index.html đã cập nhật</button>
+      <input id="hostPassword" class="host-pass" type="password" placeholder="Nhập mật khẩu lưu host" />
+      <button class="btn-main" id="saveHostBtn">Lưu lên host</button>
+      <button class="btn-danger" id="resetBtn">Khôi phục theo file gốc</button>
+    </div>
+
+    <div class="finder-box">
+      <div class="finder-head">Tìm ảnh theo tên file và chèn nhanh vào ô đang chọn</div>
+      <div class="finder-controls">
+        <input id="imgFindInput" class="finder-input" type="text" placeholder="Ví dụ: QT sieu pham 1.jpg hoặc LGX" />
+        <select id="imgFindType" class="finder-select">
+          <option value="all">Tất cả file</option>
+          <option value="image">Chỉ ảnh</option>
+          <option value="video">Chỉ video</option>
+        </select>
+        <button class="btn-main" id="imgFindBtn" type="button">Tìm ảnh</button>
+        <button class="btn-soft" id="imgFindClearBtn" type="button">Xóa kết quả</button>
+      </div>
+      <div class="tiny" id="imgFindHint">Mẹo: hãy click vào ô src trước, rồi tìm ảnh và bấm “Chèn vào ô đang chọn”.</div>
+      <div id="imgFindResults" class="finder-results">
+        <div class="finder-empty">Chưa có kết quả tìm kiếm.</div>
+      </div>
+    </div>
+
+    <div id="statusBox" class="status warn">Chưa nạp được file. Hãy bấm "Nạp index.html cùng thư mục" hoặc "Chọn file index.html thủ công".</div>
+
+    <div class="grid">
+      <aside class="sidebar" id="sidebar"></aside>
+      <main class="content">
+        <div class="muted" id="emptyHint">Hãy nạp file index.html để bắt đầu chỉnh sửa.</div>
+        <div id="sectionsRoot"></div>
+
+        <div class="preview-wrap">
+          <div class="preview-head">Xem Trước Nhanh</div>
+          <iframe id="previewFrame" title="preview"></iframe>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var originalHtml = '';
+      var currentDoc = null;
+      var sectionsMeta = [];
+      var statusBox = document.getElementById('statusBox');
+      var sidebar = document.getElementById('sidebar');
+      var sectionsRoot = document.getElementById('sectionsRoot');
+      var emptyHint = document.getElementById('emptyHint');
+      var previewFrame = document.getElementById('previewFrame');
+      var activePathInput = null;
+
+      function setStatus(msg, type) {
+        statusBox.textContent = msg;
+        statusBox.className = 'status ' + (type || 'warn');
+      }
+
+      function parseHtml(html) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+        return doc;
+      }
+
+      function asText(el) {
+        return (el ? el.textContent : '').trim();
+      }
+
+      function asHtml(el) {
+        return (el ? el.innerHTML : '').trim();
+      }
+
+      function normalizeTextareaForHtml(value) {
+        return value.replace(/\n/g, '<br>');
+      }
+
+      function normalizeHtmlForTextarea(value) {
+        return value.replace(/<br\s*\/?>/gi, '\n');
+      }
+
+      function normalizeAssetPath(value, defaultDir) {
+        var v = String(value || '').trim();
+        if (!v) return '';
+
+        v = v.replace(/\\/g, '/');
+        var hasScheme = /^(https?:|data:|blob:|mailto:|tel:)/i.test(v);
+        var isRooted = /^\//.test(v);
+        var isRelative = /^(\.\.\/|\.\/)/.test(v);
+        if (!hasScheme && !isRooted && !isRelative && defaultDir) {
+          v = defaultDir + v;
+        }
+
+        // Chỉ thay khoảng trắng bằng %20 để đường dẫn file ổn định trên web.
+        v = v.replace(/ /g, '%20');
+        return v;
+      }
+
+      function normalizeGalleryLine(line, defaultDir) {
+        var raw = String(line || '').trim();
+        if (!raw) return '';
+
+        var pipeIndex = raw.indexOf('|');
+        if (pipeIndex === -1) {
+          return normalizeAssetPath(raw, defaultDir);
+        }
+
+        var type = raw.slice(0, pipeIndex).trim();
+        var src = raw.slice(pipeIndex + 1).trim();
+        if (!src) return '';
+        return type + '|' + normalizeAssetPath(src, defaultDir);
+      }
+
+      function createField(container, cfg) {
+        var wrap = document.createElement('div');
+        wrap.className = 'field';
+
+        var label = document.createElement('label');
+        label.textContent = cfg.label;
+        wrap.appendChild(label);
+
+        var input;
+        if (cfg.kind === 'textarea') {
+          input = document.createElement('textarea');
+          if (cfg.long) input.classList.add('long');
+        } else {
+          input = document.createElement('input');
+          input.type = 'text';
+        }
+
+        input.value = cfg.get();
+        input.addEventListener('input', function() {
+          cfg.set(input.value);
+        });
+        if (cfg.normalizePath) {
+          input.addEventListener('focus', function() {
+            activePathInput = input;
+          });
+          input.addEventListener('blur', function() {
+            var fixed = normalizeAssetPath(input.value, cfg.defaultDir || '../images/');
+            input.value = fixed;
+            cfg.set(fixed);
+          });
+        }
+        wrap.appendChild(input);
+
+        if (cfg.hint) {
+          var hint = document.createElement('div');
+          hint.className = 'tiny';
+          hint.textContent = cfg.hint;
+          wrap.appendChild(hint);
+        }
+
+        container.appendChild(wrap);
+      }
+
+      function addSection(title, help) {
+        var section = document.createElement('section');
+        section.className = 'section';
+
+        var h = document.createElement('h2');
+        h.textContent = title;
+        section.appendChild(h);
+
+        if (help) {
+          var p = document.createElement('p');
+          p.className = 'help';
+          p.textContent = help;
+          section.appendChild(p);
+        }
+
+        sectionsRoot.appendChild(section);
+        return section;
+      }
+
+      function addCard(parent, title) {
+        var card = document.createElement('div');
+        card.className = 'card';
+        var h = document.createElement('h3');
+        h.textContent = title;
+        card.appendChild(h);
+        parent.appendChild(card);
+        return card;
+      }
+
+      function addActions(parent, actions) {
+        var row = document.createElement('div');
+        row.className = 'actions-row';
+        actions.forEach(function(action) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'btn-mini ' + action.className;
+          btn.textContent = action.label;
+          btn.addEventListener('click', action.onClick);
+          row.appendChild(btn);
+        });
+        parent.appendChild(row);
+      }
+
+      function query(doc, selector) {
+        return doc.querySelector(selector);
+      }
+
+      function queryAll(doc, selector) {
+        return Array.prototype.slice.call(doc.querySelectorAll(selector));
+      }
+
+      function getMainScriptEl() {
+        var scripts = queryAll(currentDoc, 'script');
+        for (var i = 0; i < scripts.length; i++) {
+          var t = scripts[i].textContent || '';
+          if (t.indexOf('var qtItems = [') !== -1) return scripts[i];
+        }
+        return null;
+      }
+
+      function readScriptText() {
+        var scriptEl = getMainScriptEl();
+        return scriptEl ? (scriptEl.textContent || '') : '';
+      }
+
+      function writeScriptText(newText) {
+        var scriptEl = getMainScriptEl();
+        if (!scriptEl) return false;
+        scriptEl.textContent = newText;
+        return true;
+      }
+
+      function readImageArrayFromScript(varName) {
+        var scriptText = readScriptText();
+        if (!scriptText) return [];
+        var blockRe = new RegExp('var\\s+' + varName + '\\s*=\\s*\\[([\\s\\S]*?)\\];');
+        var blockMatch = scriptText.match(blockRe);
+        if (!blockMatch) return [];
+        var inner = blockMatch[1];
+        var results = [];
+        var itemRe = /'([^']+)'/g;
+        var m;
+        while ((m = itemRe.exec(inner)) !== null) {
+          results.push(m[1]);
+        }
+        return results;
+      }
+
+      function writeImageArrayToScript(varName, items) {
+        var scriptText = readScriptText();
+        if (!scriptText) return false;
+        var clean = items
+          .filter(function(x) { return x && x.trim(); })
+          .map(function(x) { return normalizeAssetPath(x, '../images/'); });
+        var body = clean.map(function(x) { return "  '" + x.replace(/'/g, "\\'") + "'"; }).join(',\n');
+        var replacement = 'var ' + varName + ' = [\n' + body + '\n];';
+        var blockRe = new RegExp('var\\s+' + varName + '\\s*=\\s*\\[[\\s\\S]*?\\];');
+        if (!blockRe.test(scriptText)) return false;
+        scriptText = scriptText.replace(blockRe, replacement);
+        return writeScriptText(scriptText);
+      }
+
+      function readMediaArrayFromScript(varName) {
+        var scriptText = readScriptText();
+        if (!scriptText) return [];
+        var blockRe = new RegExp('var\\s+' + varName + '\\s*=\\s*\\[([\\s\\S]*?)\\];');
+        var blockMatch = scriptText.match(blockRe);
+        if (!blockMatch) return [];
+        var inner = blockMatch[1];
+        var results = [];
+        var itemRe = /\\{\\s*type:\\s*'([^']+)'\\s*,\\s*src:\\s*'([^']+)'\\s*\\}/g;
+        var m;
+        while ((m = itemRe.exec(inner)) !== null) {
+          results.push({ type: m[1], src: m[2] });
+        }
+        return results;
+      }
+
+      function writeMediaArrayToScript(varName, items) {
+        var scriptText = readScriptText();
+        if (!scriptText) return false;
+        var clean = items.filter(function(x) { return x && x.src && x.src.trim(); }).map(function(x) {
+          return {
+            type: (x.type || 'image').trim() === 'video' ? 'video' : 'image',
+            src: normalizeAssetPath(x.src, '../images/')
+          };
+        });
+
+        var body = clean.map(function(x) {
+          return "  { type: '" + x.type + "', src: '" + x.src.replace(/'/g, "\\'") + "' }";
+        }).join(',\n');
+
+        var replacement = 'var ' + varName + ' = [\n' + body + '\n];';
+        var blockRe = new RegExp('var\\s+' + varName + '\\s*=\\s*\\[[\\s\\S]*?\\];');
+        if (!blockRe.test(scriptText)) return false;
+        scriptText = scriptText.replace(blockRe, replacement);
+        return writeScriptText(scriptText);
+      }
+
+      function parseLines(text) {
+        return text.split('\n').map(function(x) { return x.trim(); }).filter(function(x) { return !!x; });
+      }
+
+      function parseGalleryLines(text) {
+        return text
+          .split('\n')
+          .map(function(x) { return normalizeGalleryLine(x, '../images/'); })
+          .filter(function(x) { return !!x; });
+      }
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function renderImageFinderResults(items) {
+        var root = document.getElementById('imgFindResults');
+        if (!root) return;
+
+        if (!items || items.length === 0) {
+          root.innerHTML = '<div class="finder-empty">Không tìm thấy ảnh phù hợp.</div>';
+          return;
+        }
+
+        root.innerHTML = items.map(function(path, idx) {
+          var safePath = escapeHtml(path);
+          return '' +
+            '<div class="finder-item">' +
+              '<div class="finder-path">' + safePath + '</div>' +
+              '<button class="btn-soft" type="button" data-copy-index="' + idx + '">Sao chép</button>' +
+              '<button class="btn-main" type="button" data-insert-index="' + idx + '">Chèn vào ô đang chọn</button>' +
+            '</div>';
+        }).join('');
+
+        Array.prototype.slice.call(root.querySelectorAll('[data-copy-index]')).forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var i = Number(btn.getAttribute('data-copy-index'));
+            var text = items[i] || '';
+            if (!text) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(function() {
+                setStatus('Đã sao chép đường dẫn ảnh.', 'ok');
+              }).catch(function() {
+                setStatus('Không sao chép được. Hãy copy thủ công.', 'warn');
+              });
+              return;
+            }
+            setStatus('Trình duyệt không hỗ trợ tự sao chép. Hãy copy thủ công.', 'warn');
+          });
+        });
+
+        Array.prototype.slice.call(root.querySelectorAll('[data-insert-index]')).forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var i = Number(btn.getAttribute('data-insert-index'));
+            var text = items[i] || '';
+            if (!text) return;
+
+            if (!activePathInput) {
+              setStatus('Hãy click vào một ô đường dẫn ảnh (src) trước, rồi chèn lại.', 'warn');
+              return;
+            }
+
+            activePathInput.value = text;
+            activePathInput.dispatchEvent(new Event('input', { bubbles: true }));
+            activePathInput.dispatchEvent(new Event('blur', { bubbles: true }));
+            setStatus('Đã chèn đường dẫn ảnh vào ô đang chọn.', 'ok');
+          });
+        });
+      }
+
+      function searchImages() {
+        var qInput = document.getElementById('imgFindInput');
+        var kindInput = document.getElementById('imgFindType');
+        var q = qInput ? qInput.value.trim() : '';
+        var kind = kindInput ? kindInput.value : 'all';
+        var url = 'api-list-images.php';
+        var params = [];
+        if (q) params.push('q=' + encodeURIComponent(q));
+        if (kind) params.push('kind=' + encodeURIComponent(kind));
+        if (params.length > 0) url += '?' + params.join('&');
+
+        setStatus('Đang tìm ảnh...', 'warn');
+        fetch(url, { cache: 'no-store' })
+          .then(function(res) {
+            return res.json().catch(function() {
+              return { ok: false, message: 'Phản hồi tìm ảnh không hợp lệ.' };
+            });
+          })
+          .then(function(data) {
+            if (!data || !data.ok) {
+              setStatus((data && data.message) ? data.message : 'Tìm ảnh thất bại.', 'error');
+              return;
+            }
+            var items = Array.isArray(data.items) ? data.items : [];
+            renderImageFinderResults(items);
+            var label = (kind === 'video') ? 'video' : ((kind === 'image') ? 'ảnh' : 'file');
+            setStatus('Đã tìm thấy ' + items.length + ' ' + label + ' phù hợp.', 'ok');
+          })
+          .catch(function() {
+            setStatus('Không gọi được api-list-images.php. Kiểm tra file API trên host.', 'error');
+          });
+      }
+
+      function clearImageFinderResults() {
+        var root = document.getElementById('imgFindResults');
+        if (!root) return;
+        root.innerHTML = '<div class="finder-empty">Chưa có kết quả tìm kiếm.</div>';
+      }
+
+      function createThumbNode(cfg, index, src, isVideo, fallbackVideoPoster) {
+        var thumb = currentDoc.createElement('div');
+        thumb.className = cfg.thumbClass;
+        thumb.setAttribute('style', 'position:relative;cursor:pointer;');
+        thumb.setAttribute('onclick', cfg.indexVar + '=' + index + ';' + cfg.renderFn + '()');
+
+        var img = currentDoc.createElement('img');
+        img.setAttribute('src', isVideo ? (fallbackVideoPoster || src) : src);
+        img.setAttribute('style', 'width:' + cfg.thumbWidth + ';height:' + cfg.thumbHeight + ';object-fit:cover;border-radius:6px;display:block;' + (isVideo ? 'pointer-events:none;' : ''));
+        thumb.appendChild(img);
+
+        if (isVideo) {
+          var overlay = currentDoc.createElement('div');
+          overlay.setAttribute('style', 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);border-radius:6px;');
+          var icon = currentDoc.createElement('span');
+          icon.setAttribute('style', 'color:#fff;font-size:20px;line-height:1;');
+          icon.innerHTML = '&#9654;';
+          overlay.appendChild(icon);
+          thumb.appendChild(overlay);
+        }
+
+        return thumb;
+      }
+
+      function syncOneGalleryThumbnails(cfg) {
+        var gallery = query(currentDoc, '#' + cfg.galleryId);
+        if (!gallery) return false;
+
+        var strip = gallery.querySelector('div[style*="margin-top:16px"]');
+        if (!strip) return false;
+
+        while (strip.firstChild) strip.removeChild(strip.firstChild);
+
+        if (cfg.mode === 'images') {
+          var images = readImageArrayFromScript(cfg.arrayVar);
+          images.forEach(function(src, idx) {
+            strip.appendChild(createThumbNode(cfg, idx, src, false, ''));
+          });
+          return true;
+        }
+
+        var media = readMediaArrayFromScript(cfg.arrayVar);
+        var firstImage = '';
+        for (var i = 0; i < media.length; i++) {
+          if (media[i].type === 'image') {
+            firstImage = media[i].src;
+            break;
+          }
+        }
+        media.forEach(function(item, idx) {
+          strip.appendChild(createThumbNode(cfg, idx, item.src, item.type === 'video', firstImage));
+        });
+        return true;
+      }
+
+      function syncAllManagedThumbnails(options) {
+        var silent = !!(options && options.silent);
+        var configs = [
+          { galleryId: 'lgxGallery', arrayVar: 'lgxImgs', mode: 'images', thumbClass: 'lgx-thumb', indexVar: 'lgxIdx', renderFn: 'renderLGXImg', thumbWidth: '60px', thumbHeight: '45px' },
+          { galleryId: 'mtctGallery', arrayVar: 'mtctImgs', mode: 'images', thumbClass: 'mtct-thumb', indexVar: 'mtctIdx', renderFn: 'renderMTCTImg', thumbWidth: '60px', thumbHeight: '45px' },
+          { galleryId: 'dthGallery', arrayVar: 'dthImgs', mode: 'images', thumbClass: 'dth-thumb', indexVar: 'dthIdx', renderFn: 'renderDTHImg', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'hbGallery', arrayVar: 'hbImgs', mode: 'images', thumbClass: 'hb-thumb', indexVar: 'hbIdx', renderFn: 'renderHBImg', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'vrGallery', arrayVar: 'vrImgs', mode: 'images', thumbClass: 'vr-thumb', indexVar: 'vrIdx', renderFn: 'renderVRImg', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'bvGallery', arrayVar: 'bvImgs', mode: 'images', thumbClass: 'bv-thumb', indexVar: 'bvIdx', renderFn: 'renderBVImg', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'ksGallery', arrayVar: 'ksImgs', mode: 'images', thumbClass: 'ks-thumb', indexVar: 'ksIdx', renderFn: 'renderKSImg', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'qtGallery', arrayVar: 'qtItems', mode: 'media', thumbClass: 'qt-thumb', indexVar: 'qtIdx', renderFn: 'renderQTItem', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'pcGallery', arrayVar: 'phuCatItems', mode: 'media', thumbClass: 'pc-thumb', indexVar: 'phuCatIdx', renderFn: 'renderPCItem', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'txGallery', arrayVar: 'txItems', mode: 'media', thumbClass: 'tx-thumb', indexVar: 'txIdx', renderFn: 'renderTXItem', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'xkGallery', arrayVar: 'xkItems', mode: 'media', thumbClass: 'xk-thumb', indexVar: 'xkIdx', renderFn: 'renderXKItem', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'qlGallery', arrayVar: 'qlItems', mode: 'media', thumbClass: 'ql-thumb', indexVar: 'qlIdx', renderFn: 'renderQLItem', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'utoGallery', arrayVar: 'utoItems', mode: 'media', thumbClass: 'uto-thumb', indexVar: 'utoIdx', renderFn: 'renderUTOItem', thumbWidth: '70px', thumbHeight: '52px' },
+          { galleryId: 'pc129Gallery', arrayVar: 'pc129Items', mode: 'media', thumbClass: 'pc129-thumb', indexVar: 'pc129Idx', renderFn: 'renderPC129Item', thumbWidth: '70px', thumbHeight: '52px' }
+        ];
+
+        var okCount = 0;
+        configs.forEach(function(cfg) {
+          if (syncOneGalleryThumbnails(cfg)) okCount += 1;
+        });
+
+        if (!silent) {
+          if (okCount > 0) {
+            setStatus('Đã đồng bộ thumbnail cho ' + okCount + ' gallery. Bấm "Xem trước" để kiểm tra.', 'ok');
+          } else {
+            setStatus('Không tìm thấy gallery phù hợp để đồng bộ thumbnail.', 'warn');
+          }
+        }
+
+        return okCount;
+      }
+
+      function buildEditor() {
+        sectionsRoot.innerHTML = '';
+        sidebar.innerHTML = '';
+        sectionsMeta = [];
+
+        emptyHint.style.display = 'none';
+
+        // HERO
+        var heroSec = addSection('Hero', 'Sửa nhãn, tiêu đề, mô tả và nội dung nút trong Hero.');
+        var heroCard = addCard(heroSec, 'Nội dung Hero');
+
+        var heroTag = query(currentDoc, '.hero-badge');
+        var heroTitle = query(currentDoc, '.hero-title');
+        var heroSub = query(currentDoc, '.hero-subtitle');
+        var heroBtn1 = query(currentDoc, '.hero-btns .btn-primary');
+        var heroBtn2 = query(currentDoc, '.hero-btns .btn-outline');
+
+        createField(heroCard, {
+          label: 'Nhãn',
+          kind: 'input',
+          get: function() { return asText(heroTag); },
+          set: function(v) { if (heroTag) heroTag.textContent = v; }
+        });
+
+        createField(heroCard, {
+          label: 'Tiêu đề Hero (hỗ trợ xuống dòng)',
+          kind: 'textarea',
+          get: function() { return normalizeHtmlForTextarea(asHtml(heroTitle)); },
+          set: function(v) { if (heroTitle) heroTitle.innerHTML = normalizeTextareaForHtml(v); },
+          hint: 'Dùng Enter để xuống dòng. Có thể giữ <span> nếu cần tô màu.'
+        });
+
+        createField(heroCard, {
+          label: 'Mô tả Hero',
+          kind: 'textarea',
+          get: function() { return asText(heroSub); },
+          set: function(v) { if (heroSub) heroSub.textContent = v; }
+        });
+
+        createField(heroCard, {
+          label: 'Text nút chính Hero',
+          kind: 'input',
+          get: function() { return asText(heroBtn1); },
+          set: function(v) { if (heroBtn1) heroBtn1.textContent = v; }
+        });
+
+        createField(heroCard, {
+          label: 'Text nút phụ Hero',
+          kind: 'input',
+          get: function() { return asText(heroBtn2); },
+          set: function(v) { if (heroBtn2) heroBtn2.textContent = v; }
+        });
+
+        // SẢN PHẨM ĐẦU TƯ
+        var spSec = addSection('Siêu Phẩm Đầu Tư', 'Sửa tên, giá, nhãn, ảnh cho từng card trong danh sách Siêu Phẩm Đầu Tư.');
+        var spHeader = addCard(spSec, 'Tiêu đề Section');
+
+        var sectionTag = query(currentDoc, '#mat-bang .section-tag');
+        var sectionTitle = query(currentDoc, '#mat-bang .section-title');
+        var sectionDesc = query(currentDoc, '#mat-bang .section-desc');
+
+        createField(spHeader, {
+          label: 'Nhãn section',
+          kind: 'input',
+          get: function() { return asText(sectionTag); },
+          set: function(v) { if (sectionTag) sectionTag.textContent = v; }
+        });
+
+        createField(spHeader, {
+          label: 'Tiêu đề section (hỗ trợ xuống dòng)',
+          kind: 'textarea',
+          get: function() { return normalizeHtmlForTextarea(asHtml(sectionTitle)); },
+          set: function(v) { if (sectionTitle) sectionTitle.innerHTML = normalizeTextareaForHtml(v); }
+        });
+
+        createField(spHeader, {
+          label: 'Mô tả section',
+          kind: 'textarea',
+          get: function() { return asText(sectionDesc); },
+          set: function(v) { if (sectionDesc) sectionDesc.textContent = v; }
+        });
+
+        addActions(spSec, [
+          {
+            label: '+ Thêm card siêu phẩm',
+            className: 'btn-main',
+            onClick: function() {
+              var grid = query(currentDoc, '#mat-bang .listings-grid');
+              var cards = queryAll(currentDoc, '#mat-bang .listings-grid .listing-card');
+              if (!grid || cards.length === 0) {
+                setStatus('Không tìm thấy card mẫu để thêm.', 'warn');
+                return;
+              }
+              var clone = cards[cards.length - 1].cloneNode(true);
+              var cName = clone.querySelector('.listing-name');
+              var cPrice = clone.querySelector('.listing-price');
+              var cBadge = clone.querySelector('.listing-badge');
+              var cImg = clone.querySelector('img');
+              if (cName) cName.textContent = 'Sản phẩm mới';
+              if (cPrice) cPrice.textContent = 'Liên hệ';
+              if (cBadge) cBadge.textContent = 'MỚI';
+              if (cImg) cImg.setAttribute('alt', 'Sản phẩm mới');
+              grid.appendChild(clone);
+              buildEditor();
+              setStatus('Đã thêm 1 card Siêu Phẩm mới. Hãy sửa lại nội dung card vừa thêm.', 'ok');
+            }
+          },
+          {
+            label: '- Xóa card cuối',
+            className: 'btn-danger',
+            onClick: function() {
+              var grid = query(currentDoc, '#mat-bang .listings-grid');
+              var cards = queryAll(currentDoc, '#mat-bang .listings-grid .listing-card');
+              if (!grid || cards.length <= 1) {
+                setStatus('Cần giữ ít nhất 1 card, không thể xóa thêm.', 'warn');
+                return;
+              }
+              grid.removeChild(cards[cards.length - 1]);
+              buildEditor();
+              setStatus('Đã xóa card Siêu Phẩm cuối cùng.', 'ok');
+            }
+          }
+        ]);
+
+        var listingCards = queryAll(currentDoc, '#mat-bang .listings-grid .listing-card');
+        listingCards.forEach(function(card, idx) {
+          var cardBox = addCard(spSec, 'Card Siêu Phẩm #' + (idx + 1));
+          var img = card.querySelector('img');
+          var badge = card.querySelector('.listing-badge');
+          var name = card.querySelector('.listing-name');
+          var price = card.querySelector('.listing-price');
+
+          createField(cardBox, {
+            label: 'Tên sản phẩm',
+            kind: 'input',
+            get: function() { return asText(name); },
+            set: function(v) { if (name) name.textContent = v; }
+          });
+
+          createField(cardBox, {
+            label: 'Giá',
+            kind: 'input',
+            get: function() { return asText(price); },
+            set: function(v) { if (price) price.textContent = v; }
+          });
+
+          createField(cardBox, {
+            label: 'Nhãn',
+            kind: 'input',
+            get: function() { return asText(badge); },
+            set: function(v) { if (badge) badge.textContent = v; }
+          });
+
+          createField(cardBox, {
+            label: 'Đường dẫn ảnh (src)',
+            kind: 'input',
+            get: function() { return img ? (img.getAttribute('src') || '') : ''; },
+            set: function(v) { if (img) img.setAttribute('src', v); },
+            normalizePath: true,
+            defaultDir: '../images/',
+            hint: 'Ví dụ: ../images/ten-anh.jpg'
+          });
+        });
+
+        // ẢNH HIỂN THỊ TRONG CÁC MỤC
+        var secImgSec = addSection('Ảnh Hiển Thị Trong Các Mục', 'Sửa trực tiếp ảnh đang hiển thị trong từng mục nội dung (không chỉ thumbnail).');
+        var sectionImageSelectors = [
+          { label: 'Hero', selector: '.hero img' },
+          { label: 'Siêu phẩm đầu tư', selector: '#mat-bang .listing-card img' },
+          { label: 'Mặt bằng lô đất', selector: '#mat-bang-lodat .mb-card img' },
+          { label: 'Lợi ích đầu tư', selector: '#loi-ich img' },
+          { label: 'Phương án', selector: '#phuong-an img' },
+          { label: 'CTA', selector: '.cta-strip img' }
+        ];
+
+        sectionImageSelectors.forEach(function(group) {
+          var imgs = queryAll(currentDoc, group.selector);
+          if (!imgs.length) return;
+
+          imgs.forEach(function(imgEl, idx) {
+            var card = addCard(secImgSec, group.label + ' - Ảnh #' + (idx + 1));
+            createField(card, {
+              label: 'Đường dẫn ảnh (src)',
+              kind: 'input',
+              get: function() { return imgEl.getAttribute('src') || ''; },
+              set: function(v) { imgEl.setAttribute('src', v); },
+              normalizePath: true,
+              defaultDir: '../images/'
+            });
+
+            createField(card, {
+              label: 'Alt ảnh',
+              kind: 'input',
+              get: function() { return imgEl.getAttribute('alt') || ''; },
+              set: function(v) { imgEl.setAttribute('alt', v); }
+            });
+          });
+        });
+
+        // MẶT BẰNG LÔ ĐẤT
+        var mbSec = addSection('Mặt Bằng Lô Đất', 'Sửa tên, thông tin và ảnh cho các card trong mục Mặt Bằng Lô Đất.');
+
+        addActions(mbSec, [
+          {
+            label: '+ Thêm card mặt bằng',
+            className: 'btn-main',
+            onClick: function() {
+              var grid = query(currentDoc, '#mat-bang-lodat .mb-grid');
+              var cards = queryAll(currentDoc, '#mat-bang-lodat .mb-grid .mb-card');
+              if (!grid || cards.length === 0) {
+                setStatus('Không tìm thấy card mẫu để thêm.', 'warn');
+                return;
+              }
+              var clone = cards[cards.length - 1].cloneNode(true);
+              var cName = clone.querySelector('.mb-name');
+              var cDetails = clone.querySelector('.mb-details');
+              var cImg = clone.querySelector('img');
+              if (cName) cName.textContent = 'MB MỚI';
+              if (cDetails) cDetails.innerHTML = 'Nội dung mới<br>Cập nhật giá<br>Cập nhật vị trí';
+              if (cImg) cImg.setAttribute('alt', 'MB mới');
+              grid.appendChild(clone);
+              buildEditor();
+              setStatus('Đã thêm 1 card Mặt Bằng mới. Hãy sửa lại nội dung card vừa thêm.', 'ok');
+            }
+          },
+          {
+            label: '- Xóa card cuối',
+            className: 'btn-danger',
+            onClick: function() {
+              var grid = query(currentDoc, '#mat-bang-lodat .mb-grid');
+              var cards = queryAll(currentDoc, '#mat-bang-lodat .mb-grid .mb-card');
+              if (!grid || cards.length <= 1) {
+                setStatus('Cần giữ ít nhất 1 card, không thể xóa thêm.', 'warn');
+                return;
+              }
+              grid.removeChild(cards[cards.length - 1]);
+              buildEditor();
+              setStatus('Đã xóa card Mặt Bằng cuối cùng.', 'ok');
+            }
+          }
+        ]);
+
+        var mbCards = queryAll(currentDoc, '#mat-bang-lodat .mb-grid .mb-card');
+
+        mbCards.forEach(function(card, idx) {
+          var box = addCard(mbSec, 'Card Mặt Bằng #' + (idx + 1));
+          var img = card.querySelector('img');
+          var name = card.querySelector('.mb-name');
+          var details = card.querySelector('.mb-details');
+
+          createField(box, {
+            label: 'Tên card',
+            kind: 'input',
+            get: function() { return asText(name); },
+            set: function(v) { if (name) name.textContent = v; }
+          });
+
+          createField(box, {
+            label: 'Thông tin chi tiết (mỗi dòng 1 ý)',
+            kind: 'textarea',
+            get: function() { return normalizeHtmlForTextarea(asHtml(details)); },
+            set: function(v) { if (details) details.innerHTML = normalizeTextareaForHtml(v); }
+          });
+
+          createField(box, {
+            label: 'Ảnh card (src)',
+            kind: 'input',
+            get: function() { return img ? (img.getAttribute('src') || '') : ''; },
+            set: function(v) { if (img) img.setAttribute('src', v); },
+            normalizePath: true,
+            defaultDir: '../images/'
+          });
+        });
+
+        // LỢI ÍCH
+        var liSec = addSection('Lợi Ích Đầu Tư', 'Sửa tiêu đề và nội dung 4 card lợi ích.');
+        var benefitCards = queryAll(currentDoc, '#loi-ich .benefit-card');
+
+        benefitCards.forEach(function(card, idx) {
+          var box = addCard(liSec, 'Lợi Ích #' + (idx + 1));
+          var title = card.querySelector('.benefit-title');
+          var desc = card.querySelector('.benefit-desc');
+
+          createField(box, {
+            label: 'Tiêu đề',
+            kind: 'input',
+            get: function() { return asText(title); },
+            set: function(v) { if (title) title.textContent = v; }
+          });
+
+          createField(box, {
+            label: 'Nội dung',
+            kind: 'textarea',
+            get: function() { return asText(desc); },
+            set: function(v) { if (desc) desc.textContent = v; }
+          });
+        });
+
+        // PHƯƠNG ÁN
+        var paSec = addSection('Phương Án', 'Sửa nội dung 2 phương án đầu tư.');
+        var paCards = queryAll(currentDoc, '#phuong-an .pa-card');
+
+        paCards.forEach(function(card, idx) {
+          var box = addCard(paSec, 'Phương Án #' + (idx + 1));
+          var name = card.querySelector('.pa-name');
+          var desc = card.querySelector('.pa-desc');
+          var btn = card.querySelector('.pa-btn');
+
+          createField(box, {
+            label: 'Tên phương án',
+            kind: 'input',
+            get: function() { return asText(name); },
+            set: function(v) { if (name) name.textContent = v; }
+          });
+
+          createField(box, {
+            label: 'Mô tả phương án',
+            kind: 'textarea',
+            get: function() { return asText(desc); },
+            set: function(v) { if (desc) desc.textContent = v; }
+          });
+
+          createField(box, {
+            label: 'Nội dung nút',
+            kind: 'input',
+            get: function() { return asText(btn); },
+            set: function(v) { if (btn) btn.textContent = v; }
+          });
+        });
+
+        // CTA + FOOTER
+        var endSec = addSection('CTA Và Footer', 'Sửa dòng kêu gọi hành động cuối trang và thông tin chân trang.');
+        var ctaCard = addCard(endSec, 'CTA Cuối Trang');
+        var ctaTitle = query(currentDoc, '.cta-strip h2');
+        var ctaDesc = query(currentDoc, '.cta-strip p');
+        var ctaBtn = query(currentDoc, '.cta-strip .btn-primary');
+
+        createField(ctaCard, {
+          label: 'Tiêu đề CTA',
+          kind: 'input',
+          get: function() { return asText(ctaTitle); },
+          set: function(v) { if (ctaTitle) ctaTitle.textContent = v; }
+        });
+
+        createField(ctaCard, {
+          label: 'Mô tả CTA',
+          kind: 'textarea',
+          get: function() { return asText(ctaDesc); },
+          set: function(v) { if (ctaDesc) ctaDesc.textContent = v; }
+        });
+
+        createField(ctaCard, {
+          label: 'Nội dung nút CTA',
+          kind: 'input',
+          get: function() { return asText(ctaBtn); },
+          set: function(v) { if (ctaBtn) ctaBtn.textContent = v; }
+        });
+
+        var footerCard = addCard(endSec, 'Footer');
+        var footer = query(currentDoc, 'footer');
+
+        createField(footerCard, {
+          label: 'Nội dung Footer (hỗ trợ HTML cơ bản)',
+          kind: 'textarea',
+          get: function() { return normalizeHtmlForTextarea(asHtml(footer)); },
+          set: function(v) { if (footer) footer.innerHTML = normalizeTextareaForHtml(v); }
+        });
+
+        // GALLERY ẢNH/VIDEO (cho phép sửa nhiều ảnh nhanh)
+        var galSec = addSection('Gallery Ảnh Video', 'Nhập mỗi dòng 1 đường dẫn. Đối với gallery có video: dùng format image|đường-dẫn hoặc video|đường-dẫn.');
+
+        addActions(galSec, [
+          {
+            label: 'Đồng bộ thumbnail từ gallery',
+            className: 'btn-main',
+            onClick: function() {
+              syncAllManagedThumbnails();
+            }
+          }
+        ]);
+
+        function addImageArrayEditor(title, varName) {
+          var card = addCard(galSec, title + ' (' + varName + ')');
+          createField(card, {
+            label: 'Danh sách ảnh (mỗi dòng 1 đường dẫn)',
+            kind: 'textarea',
+            long: true,
+            get: function() {
+              return readImageArrayFromScript(varName).join('\n');
+            },
+            set: function(v) {
+              var ok = writeImageArrayToScript(varName, parseGalleryLines(v));
+              if (!ok) setStatus('Không cập nhật được gallery: ' + varName, 'warn');
+            },
+            hint: 'Ví dụ: ../images/LGX%201.jpg'
+          });
+        }
+
+        function addMediaArrayEditor(title, varName) {
+          var card = addCard(galSec, title + ' (' + varName + ')');
+          createField(card, {
+            label: 'Danh sách ảnh/video',
+            kind: 'textarea',
+            long: true,
+            get: function() {
+              return readMediaArrayFromScript(varName).map(function(item) {
+                return item.type + '|' + item.src;
+              }).join('\n');
+            },
+            set: function(v) {
+              var rows = parseGalleryLines(v).map(function(line) {
+                var parts = line.split('|');
+                if (parts.length < 2) return null;
+                return { type: parts[0].trim(), src: parts.slice(1).join('|').trim() };
+              }).filter(function(x) { return !!x; });
+              var ok = writeMediaArrayToScript(varName, rows);
+              if (!ok) setStatus('Không cập nhật được gallery: ' + varName, 'warn');
+            },
+            hint: 'Ví dụ: image|../images/QT%202.jpg hoặc video|../images/QT%20vid%201.mp4'
+          });
+        }
+
+        addImageArrayEditor('Legacy Hinoiri', 'lgxImgs');
+        addImageArrayEditor('Metro City', 'mtctImgs');
+        addImageArrayEditor('Địa Trung Hải', 'dthImgs');
+        addImageArrayEditor('Hoa Binh', 'hbImgs');
+        addImageArrayEditor('Vai Reo', 'vrImgs');
+        addImageArrayEditor('Ba Vì', 'bvImgs');
+        addImageArrayEditor('Kim Sơn', 'ksImgs');
+
+        addMediaArrayEditor('Quảng Trị', 'qtItems');
+        addMediaArrayEditor('Phú Cát', 'phuCatItems');
+        addMediaArrayEditor('Tân Xã', 'txItems');
+        addMediaArrayEditor('Xuân Khanh', 'xkItems');
+        addMediaArrayEditor('Quất Lâm', 'qlItems');
+        addMediaArrayEditor('Utopia Villas', 'utoItems');
+        addMediaArrayEditor('Lô góc 129m2', 'pc129Items');
+
+        setupTabs();
+      }
+
+      function setupTabs() {
+        sidebar.innerHTML = '';
+        sectionsMeta = Array.prototype.slice.call(sectionsRoot.querySelectorAll('.section')).map(function(sec, idx) {
+          var title = sec.querySelector('h2') ? sec.querySelector('h2').textContent : ('Mục ' + (idx + 1));
+          var btn = document.createElement('button');
+          btn.className = 'tab';
+          btn.textContent = title;
+          btn.addEventListener('click', function() {
+            activateTab(idx);
+          });
+          sidebar.appendChild(btn);
+          return { section: sec, tab: btn };
+        });
+
+        if (sectionsMeta.length > 0) activateTab(0);
+      }
+
+      function activateTab(index) {
+        sectionsMeta.forEach(function(item, idx) {
+          var active = idx === index;
+          item.section.classList.toggle('active', active);
+          item.tab.classList.toggle('active', active);
+        });
+      }
+
+      function serializeCurrentHtml() {
+        return '<!DOCTYPE html>\n' + currentDoc.documentElement.outerHTML;
+      }
+
+      function preview() {
+        if (!currentDoc) {
+          setStatus('Chưa có dữ liệu để xem trước.', 'warn');
+          return;
+        }
+        previewFrame.style.display = 'block';
+        previewFrame.srcdoc = serializeCurrentHtml();
+        setStatus('Đã cập nhật xem trước.', 'ok');
+      }
+
+      function downloadUpdatedIndex() {
+        if (!currentDoc) {
+          setStatus('Chưa có dữ liệu để tải.', 'warn');
+          return;
+        }
+        var html = serializeCurrentHtml();
+        var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'index.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        setStatus('Đã tạo file index.html mới. Bạn chỉ cần thay file index.html cũ bằng file vừa tải.', 'ok');
+      }
+
+      function saveToHost() {
+        if (!currentDoc) {
+          setStatus('Chưa có dữ liệu để lưu lên host.', 'warn');
+          return;
+        }
+
+        // Tự động đồng bộ thumbnail theo dữ liệu gallery trước khi gửi lên host.
+        syncAllManagedThumbnails({ silent: true });
+
+        var passInput = document.getElementById('hostPassword');
+        var password = passInput ? passInput.value.trim() : '';
+        if (!password) {
+          setStatus('Hãy nhập mật khẩu trước khi lưu lên host.', 'warn');
+          return;
+        }
+
+        setStatus('Đang lưu lên host...', 'warn');
+
+        fetch('api-save-index.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            password: password,
+            html: serializeCurrentHtml()
+          })
+        })
+        .then(function(res) {
+          return res.json().catch(function() {
+            return { ok: false, message: 'Phản hồi không hợp lệ từ server.' };
+          });
+        })
+        .then(function(data) {
+          if (data && data.ok) {
+            var msg = 'Đã lưu thành công lên host (index.html đã cập nhật).';
+            if (data.backup_file) msg += ' Backup: ' + data.backup_file;
+            setStatus(msg, 'ok');
+            if (passInput) passInput.value = '';
+          } else {
+            setStatus((data && data.message) ? data.message : 'Lưu host thất bại.', 'error');
+          }
+        })
+        .catch(function() {
+          setStatus('Không kết nối được endpoint lưu host. Kiểm tra api-save-index.php trên host.', 'error');
+        });
+      }
+
+      function resetToOriginal() {
+        if (!originalHtml) {
+          setStatus('Không có bản gốc để khôi phục.', 'warn');
+          return;
+        }
+        currentDoc = parseHtml(originalHtml);
+        buildEditor();
+        previewFrame.style.display = 'none';
+        previewFrame.srcdoc = '';
+        setStatus('Đã khôi phục theo file gốc vừa nạp.', 'ok');
+      }
+
+      function loadFromHtml(html, sourceLabel) {
+        originalHtml = html;
+        currentDoc = parseHtml(html);
+        buildEditor();
+        previewFrame.style.display = 'none';
+        previewFrame.srcdoc = '';
+        setStatus('Đã nạp thành công từ: ' + sourceLabel, 'ok');
+      }
+
+      function loadDefaultIndex() {
+        fetch('index.html', { cache: 'no-store' })
+          .then(function(res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.text();
+          })
+          .then(function(text) {
+            loadFromHtml(text, 'index.html cùng thư mục');
+          })
+          .catch(function() {
+            setStatus('Không nạp được index.html tự động. Hãy bấm "Chọn file index.html thủ công".', 'warn');
+          });
+      }
+
+      document.getElementById('loadDefaultBtn').addEventListener('click', loadDefaultIndex);
+      document.getElementById('previewBtn').addEventListener('click', preview);
+      document.getElementById('downloadBtn').addEventListener('click', downloadUpdatedIndex);
+      document.getElementById('saveHostBtn').addEventListener('click', saveToHost);
+      document.getElementById('resetBtn').addEventListener('click', resetToOriginal);
+      document.getElementById('imgFindBtn').addEventListener('click', searchImages);
+      document.getElementById('imgFindClearBtn').addEventListener('click', clearImageFinderResults);
+
+      document.getElementById('imgFindInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          searchImages();
+        }
+      });
+
+      document.getElementById('pickFile').addEventListener('change', function(e) {
+        var file = e.target.files && e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          loadFromHtml(String(evt.target.result || ''), file.name);
+        };
+        reader.onerror = function() {
+          setStatus('Không đọc được file đã chọn.', 'error');
+        };
+        reader.readAsText(file, 'utf-8');
+      });
+
+        // Thử nạp index tự động khi mở lần đầu
+      loadDefaultIndex();
+    })();
+  </script>
+</body>
+</html>
