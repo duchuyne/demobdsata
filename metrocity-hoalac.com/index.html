@@ -209,12 +209,11 @@ nav.scrolled{height:92px;background:rgba(6,30,36,0.95);box-shadow:0 8px 30px rgb
 .press-proof-title{font-size:clamp(20px,2.8vw,28px) !important;font-weight:900 !important;color:#09353f !important;margin-bottom:6px !important}
 .press-proof-desc{font-size:14.5px !important;color:#475569 !important;max-width:750px !important;margin:0 auto !important;line-height:1.6 !important}
 .press-proof-grid{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:20px !important}
-a.press-proof-card{text-decoration:none !important;color:inherit !important;cursor:pointer !important}
 .press-proof-card{background:#ffffff !important;border:1px solid rgba(9,53,63,0.14) !important;border-left:4px solid #0f7f96 !important;border-radius:18px !important;padding:20px !important;box-shadow:0 10px 30px rgba(9,53,63,0.06) !important;transition:transform 0.25s ease,box-shadow 0.25s ease !important;display:flex !important;flex-direction:column !important;justify-content:space-between !important}
 .press-proof-card:hover{transform:translateY(-4px) !important;box-shadow:0 16px 40px rgba(9,53,63,0.12) !important;border-left-color:#f5c842 !important}
-.press-card-img-wrap{position:relative !important;width:100% !important;height:185px !important;border-radius:12px !important;overflow:hidden !important;margin-bottom:14px !important;background:#09353f !important}
-.press-card-img{width:100% !important;height:100% !important;object-fit:cover !important;transition:transform 0.35s ease !important;display:block !important}
-.press-proof-card:hover .press-card-img{transform:scale(1.04) !important}
+.press-card-img-wrap{position:relative !important;width:100% !important;height:230px !important;border-radius:12px !important;overflow:hidden !important;margin-bottom:14px !important;background:#09353f !important;border:1px solid rgba(9,53,63,0.12) !important}
+.press-card-img{width:100% !important;height:100% !important;object-fit:cover !important;object-position:top center !important;transition:transform 0.35s ease !important;display:block !important}
+.press-proof-card:hover .press-card-img{transform:scale(1.03) !important}
 .press-img-overlay-tag{position:absolute !important;top:10px !important;right:10px !important;background:rgba(9,53,63,0.85) !important;color:#ffffff !important;font-size:10.5px !important;font-weight:800 !important;padding:4px 10px !important;border-radius:999px !important;backdrop-filter:blur(4px) !important;border:1px solid rgba(255,255,255,0.25) !important;z-index:2 !important}
 .press-card-top{margin-bottom:12px !important}
 .press-badge{display:inline-flex !important;align-items:center !important;gap:6px !important;font-size:11px !important;font-weight:900 !important;padding:4px 10px !important;border-radius:6px !important;background:#f1f5f9 !important;color:#0f172a !important;border:1px solid #cbd5e1 !important;margin-bottom:10px !important}
@@ -227,9 +226,7 @@ a.press-proof-card{text-decoration:none !important;color:inherit !important;curs
 .press-card-bottom{display:flex !important;align-items:center !important;justify-content:space-between !important;gap:10px !important;flex-wrap:wrap !important;padding-top:10px !important;border-top:1px solid #f1f5f9 !important}
 .press-impact-tag{font-size:11.5px !important;font-weight:800 !important;color:#0f7f96 !important;background:rgba(15,127,150,0.1) !important;padding:4px 10px !important;border-radius:999px !important}
 .press-date{font-size:11.5px !important;color:#64748b !important;font-weight:600 !important}
-.press-read-more{font-size:12px !important;font-weight:800 !important;color:#0f7f96 !important;display:inline-flex !important;align-items:center !important;gap:4px !important;transition:color 0.2s,transform 0.2s !important}
-.press-proof-card:hover .press-read-more{color:#d97706 !important;transform:translateX(3px) !important}
-@media(max-width:800px){.press-proof-grid{grid-template-columns:1fr !important}}
+@media(max-width:800px){.press-proof-grid{grid-template-columns:1fr !important}.press-card-img-wrap{height:190px !important}}
 
 /* HOT LISTINGS */
 .section-hot{padding:92px 0 84px;background:linear-gradient(180deg,#f6fbfa 0%,#f2f8f7 100%);position:relative}
@@ -1775,11 +1772,11 @@ nav::after{
       </div>
 
       <div class="press-proof-grid">
-        <!-- Article 1: VnExpress / Tuyến Metro số 5 -->
-        <a href="https://vnexpress.net/khoi-cong-tuyen-duong-sat-van-cao-hoa-lac-trong-nam-2025-4852698.html" target="_blank" rel="noopener noreferrer" class="press-proof-card">
+        <!-- Article 1: VnExpress Tuyến Đường Sắt Văn Cao - Hòa Lạc -->
+        <div class="press-proof-card">
           <div class="press-card-img-wrap">
-            <img src="images/vn express duong sat.webp" alt="Khởi công tuyến đường sắt Văn Cao - Hòa Lạc trong năm 2025 - VnExpress" class="press-card-img" loading="lazy">
-            <span class="press-img-overlay-tag">🔗 Báo VnExpress ↗</span>
+            <img src="images/vnexpress duong sat van cao.png" alt="Báo VnExpress - Tuyến đường sắt đô thị Văn Cao Hòa Lạc" class="press-card-img" loading="lazy">
+            <span class="press-img-overlay-tag">📰 Báo VnExpress</span>
           </div>
           <div class="press-card-top">
             <div class="press-badge vnexpress">📰 Báo VnExpress</div>
@@ -1788,15 +1785,15 @@ nav::after{
           </div>
           <div class="press-card-bottom">
             <span class="press-impact-tag">⚡ Hạ Tầng Đột Phá</span>
-            <span class="press-read-more">Đọc bài báo gốc trên VnExpress ➔</span>
+            <span class="press-date">Tin báo chí đưa tin</span>
           </div>
-        </a>
+        </div>
 
-        <!-- Article 2: Báo Thành Ủy Hà Nội / Khu CNC Hòa Lạc -->
-        <a href="https://thanhuyhanoi.vn/tin-tuc/kinh-te-van-hoa-xa-hoi/toa-dam-hoan-thien-de-an-phat-trien-khu-cong-nghe-cao-hoa-lac-kien-tao-thung-lung-cong-nghe-sang-tao-cua-viet-nam-50029661.html" target="_blank" rel="noopener noreferrer" class="press-proof-card">
+        <!-- Article 2: Tọa Đàm Khu CNC Hòa Lạc -->
+        <div class="press-proof-card">
           <div class="press-card-img-wrap">
-            <img src="images/toa dam khu cnc hoa lac.jpg" alt="Tọa đàm hoàn thiện Đề án phát triển Khu Công nghệ cao Hòa Lạc - Báo Thành Ủy Hà Nội" class="press-card-img" loading="lazy">
-            <span class="press-img-overlay-tag">🔗 Báo Thành Ủy Hà Nội ↗</span>
+            <img src="images/toa dam.png" alt="Báo Điện Tử Thành Ủy Hà Nội - Tọa đàm Khu CNC Hòa Lạc" class="press-card-img" loading="lazy">
+            <span class="press-img-overlay-tag">🏛️ Báo Điện Tử Thành Ủy Hà Nội</span>
           </div>
           <div class="press-card-top">
             <div class="press-badge cafef">🏛️ Báo Điện Tử Thành Ủy Hà Nội</div>
@@ -1805,15 +1802,15 @@ nav::after{
           </div>
           <div class="press-card-bottom">
             <span class="press-impact-tag">🏢 Thung Lũng Công Nghệ Việt Nam</span>
-            <span class="press-read-more">Đọc bài báo gốc trên Báo Thành Ủy ➔</span>
+            <span class="press-date">Tin báo chí đưa tin</span>
           </div>
-        </a>
+        </div>
 
-        <!-- Article 3: VnExpress / Đưa sinh viên ra ngoại nội thành -->
-        <a href="https://vnexpress.net/nhieu-dai-hoc-dua-sinh-vien-ra-ngoai-noi-thanh-ha-noi-5089744.html" target="_blank" rel="noopener noreferrer" class="press-proof-card">
+        <!-- Article 3: VnExpress Đưa Sinh Viên Ra Ngoại Thành -->
+        <div class="press-proof-card">
           <div class="press-card-img-wrap">
-            <img src="images/nhieu dai hoc dua sv ra ngoai ha noi.webp" alt="Nhiều đại học đưa sinh viên ra ngoại nội thành Hà Nội - VnExpress" class="press-card-img" loading="lazy">
-            <span class="press-img-overlay-tag">🔗 Báo VnExpress ↗</span>
+            <img src="images/vnexpress dai hoc dua sv ra ngoai thanh.png" alt="Báo VnExpress - Nhiều đại học đưa sinh viên ra ngoại nội thành Hà Nội" class="press-card-img" loading="lazy">
+            <span class="press-img-overlay-tag">📰 Báo VnExpress</span>
           </div>
           <div class="press-card-top">
             <div class="press-badge vnexpress">📰 Báo VnExpress</div>
@@ -1822,15 +1819,15 @@ nav::after{
           </div>
           <div class="press-card-bottom">
             <span class="press-impact-tag">🎓 200.000+ Sinh Viên & Giảng Viên</span>
-            <span class="press-read-more">Đọc bài báo gốc trên VnExpress ➔</span>
+            <span class="press-date">Tin báo chí đưa tin</span>
           </div>
-        </a>
+        </div>
 
-        <!-- Article 4: Cổng Thông Tin Điện Tử TP Hà Nội -->
-        <a href="https://hanoi.gov.vn/tin-tuc-su-kien-noi-bat/xay-dung-he-sinh-thai-dong-bo-thu-hut-cac-nha-dau-tu-cong-nghe-hang-dau-vao-khu-cnc-hoa-lac-4260710192346899.htm" target="_blank" rel="noopener noreferrer" class="press-proof-card">
+        <!-- Article 4: Xây Dựng Hệ Sinh Thái Đồng Bộ -->
+        <div class="press-proof-card">
           <div class="press-card-img-wrap">
-            <img src="images/xay dung he sinh thai dong bo.jpg" alt="Xây dựng hệ sinh thái đồng bộ, thu hút các nhà đầu tư công nghệ hàng đầu vào Khu CNC Hòa Lạc - Cổng Thông Tin Điện Tử Hà Nội" class="press-card-img" loading="lazy">
-            <span class="press-img-overlay-tag">🔗 Cổng TTĐT TP Hà Nội ↗</span>
+            <img src="images/xay-dung-he-sinh-thai-dong-bo.png" alt="Cổng TTĐT TP Hà Nội - Xây dựng hệ sinh thái đồng bộ Khu CNC Hòa Lạc" class="press-card-img" loading="lazy">
+            <span class="press-img-overlay-tag">🏛️ Cổng TTĐT TP Hà Nội</span>
           </div>
           <div class="press-card-top">
             <div class="press-badge vtv">🏛️ Cổng Thông Tin Điện Tử TP Hà Nội</div>
@@ -1839,9 +1836,9 @@ nav::after{
           </div>
           <div class="press-card-bottom">
             <span class="press-impact-tag">🛡️ Chỉ Đạo Trực Tiếp Từ TP Hà Nội</span>
-            <span class="press-read-more">Đọc bài báo gốc trên Hanoi.gov.vn ➔</span>
+            <span class="press-date">Tin báo chí đưa tin</span>
           </div>
-        </a>
+        </div>
       </div>
     </div>
 
@@ -3463,14 +3460,20 @@ nav::after{
 
 <button onclick="openPopup()" id="float-banggia"
   style="position:fixed;bottom:24px;right:24px;z-index:999;
-         background:linear-gradient(135deg,#ff3b3b,#c0000a);
-         color:#fff;border:none;border-radius:14px;padding:12px 18px;
-         font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 6px 24px rgba(192,0,10,0.5);
-         display:flex;align-items:center;gap:8px;letter-spacing:0.3px;
+         padding:12px 18px;border-radius:14px;cursor:pointer;
+         box-shadow:0 8px 28px rgba(127,29,29,0.65), 0 0 0 2px rgba(254,240,138,0.9);
+         display:flex;align-items:center;gap:10px;overflow:hidden;
+         border:2px solid #fef08a;
+         background:linear-gradient(135deg,rgba(127,29,29,0.88),rgba(153,27,27,0.95)),url('images/anh so do.jpg') center/cover no-repeat;
+         color:#ffffff;font-size:13px;font-weight:900;text-shadow:0 2px 4px rgba(0,0,0,0.9);
          animation:pulse-banggia 2.2s infinite;transition:transform 0.2s,box-shadow 0.2s;"
-  onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 32px rgba(192,0,10,0.75)'"
-  onmouseout="this.style.transform='';this.style.boxShadow='0 6px 24px rgba(192,0,10,0.5)'">
-  📥 Tải Bảng Giá Ngay
+  onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 35px rgba(192,0,10,0.85), 0 0 0 2px #fff'"
+  onmouseout="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(127,29,29,0.65), 0 0 0 2px rgba(254,240,138,0.9)'">
+  <span style="font-size:18px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))">📜</span>
+  <span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.25">
+    <span style="font-size:9.5px;color:#fef08a;font-weight:900;letter-spacing:0.5px;text-transform:uppercase">🔒 BẢN XEM MỜ SỔ ĐỎ</span>
+    <span style="font-size:13.3px;font-weight:900;color:#ffffff">📥 Tải Bảng Giá Ngay</span>
+  </span>
 </button>
 
 <!-- POPUP -->
